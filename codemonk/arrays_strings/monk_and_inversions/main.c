@@ -53,6 +53,29 @@ int parse_input(FILE* d, int* res_buf)
     return res_len;
 }
 
+struct iter {
+    int i;
+    int *buf;
+};
+
+int yield(int *buf, int n)
+{
+    static struct iter it;
+
+    if (it.buf != buf) {
+        it = (struct iter) {
+            .buf = buf,
+            .i = 0
+        };
+    }
+
+    if (it.i < n) {
+        return it.buf[it.i++];
+    }
+
+    return NULL;
+}
+
 int main(int argc, char* argv) {
     int* input_buf = calloc(LEN, sizeof(int));
     int res_len;
@@ -63,7 +86,15 @@ int main(int argc, char* argv) {
         res_len = parse_input(f, input_buf);
     }
 
-    free(input_buf)
+    fclose(f);
+
+    int t;
+    t = yield(input_buf, res_len);
+
+    int n;
+    n = yield(input_buf, res_len);
+
+    free(input_buf);
 
 	return 0;
 }
